@@ -1,5 +1,6 @@
 import React from 'react';
 import Products from '../components/Products';
+import { CartConsumer } from '../components/Cart';
 
 const HomePage = ({ updateQuantity, updateRoute }) => {
   return (
@@ -8,5 +9,11 @@ const HomePage = ({ updateQuantity, updateRoute }) => {
     </div>
   );
 };
-
-export default HomePage;
+const ConnectedHomePage = ({ updateRoute }) => (
+  <CartConsumer>
+    {({ updateQuantity }) => (
+      <HomePage updateRoute={updateRoute} updateQuantity={updateQuantity} />
+    )}
+  </CartConsumer>
+);
+export default ConnectedHomePage;

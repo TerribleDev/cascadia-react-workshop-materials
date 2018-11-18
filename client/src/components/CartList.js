@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { priceInDollars } from '../utils';
 import CartItem from './CartItem';
+import { CartConsumer } from './Cart';
 
 const CartList = ({ items = [], total, updateQuantity }) => {
   if (items.length === 0) {
@@ -24,5 +25,15 @@ const CartList = ({ items = [], total, updateQuantity }) => {
     </Fragment>
   );
 };
-
-export default CartList;
+const ConnectedCartList = () => (
+  <CartConsumer>
+    {({ cart, updateQuantity }) => (
+      <CartList
+        items={cart.products}
+        updateQuantity={updateQuantity}
+        total={cart.totalPrice}
+      />
+    )}
+  </CartConsumer>
+);
+export default ConnectedCartList;

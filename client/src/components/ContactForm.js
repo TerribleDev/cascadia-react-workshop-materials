@@ -1,86 +1,74 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Formik } from 'formik';
 
 const initialValues = {
   name: '',
   message: '',
 };
 
-class Form extends Component {
-  state = initialValues;
-
-  handleChange = event => {
-    event.preventDefault();
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value,
-    });
-  };
-
-  handleSubmit = event => {
-    event.preventDefault();
-    this.props.onSubmit(this.state);
-  };
-  render() {
-    return this.props.render({
-      values: this.state,
-      handleChange: this.handleChange,
-      handleSubmit: this.handleSubmit
-    });
-  }
-}
-
-class ContactForm extends Component {
-  renderView = ({values, handleChange, handleSubmit }) => 
-   <form onSubmit={handleSubmit}>
-    <div className="field">
-      <div className="control">
-        <input
-          className="input"
-          placeholder="Taylor Swift"
-          type="text"
-          name="name"
-          value={values.name}
-          onChange={handleChange}
-          data-testid="name-input"
-        />
-        <p className="help is-danger">{null}</p>
-      </div>
-    </div>
-    <div className="field">
-      <div className="control">
-        <textarea
-          className="textarea"
-          placeholder="messsage"
-          type="text"
-          name="message"
-          value={values.message}
-          onChange={handleChange}
-          data-testid="message-input"
-        />
-        <p className="help is-danger">{null}</p>
-      </div>
-    </div>
-    <br />
-    <div className="field">
-      <div className="control">
-        <input
-          type="submit"
-          value="Submit Form"
-          className="button is-primary"
-          data-testid="submit-input"
-        />
-      </div>
-    </div>
-  </form>;
-  
-  render() {
-    return (
-      <Form onSubmit={this.props.onSubmit} render={this.renderView}></Form>
-    );
-  }
-}
+const ContactForm = ({ onSubmit }) => {
+  return (
+    <Formik
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validate={values => {
+        const errors = {};
+        if (!values.name) {
+          errors.name = 'Required';
+        }
+        if (!values.message) {
+          errors.message = 'Required';
+        }
+        return errors;
+      }}
+    >
+      {({ values, handleChange, handleSubmit, errors, touched }) => (
+        <form onSubmit={handleSubmit}>
+          <div className="field">
+            <div className="control">
+              <input
+                className="input"
+                placeholder="Taylor Swift"
+                type="text"
+                name="name"
+                value={values.name}
+                onChange={handleChange}
+                data-testid="name-input"
+              />
+              <p className="help is-danger">{touched.name && errors.name}</p>
+            </div>
+          </div>
+          <div className="field">
+            <div className="control">
+              <textarea
+                className="textarea"
+                placeholder="messsage"
+                type="text"
+                name="message"
+                value={values.message}
+                onChange={handleChange}
+                data-testid="message-input"
+              />
+              <p className="help is-danger">
+                {touched.message && errors.message}
+              </p>
+            </div>
+          </div>
+          <br />
+          <div className="field">
+            <div className="control">
+              <input
+                type="submit"
+                value="Submit Form"
+                className="button is-primary"
+                data-testid="submit-input"
+              />
+            </div>
+          </div>
+        </form>
+      )}
+    </Formik>
+  );
+};
 
 export default ContactForm;
